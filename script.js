@@ -103,7 +103,6 @@ function getMaxRounds(){
         return getMaxRounds();
     }
     else {
-        let test = 1;
         return number;
     }
     //return number;
@@ -149,4 +148,49 @@ function game(){
 
 }
 
-game();
+//game();
+
+function createMessageBox(){
+    const messageBox = document.createElement('div');
+    container.appendChild(messageBox);
+    return messageBox;
+}
+
+function createButtonBox(){
+    const buttonBox = document.createElement('div');
+    buttonBox.classList.add('buttonBox');
+    container.appendChild(buttonBox);
+    return buttonBox;
+}
+
+function createMessage(box,text){
+    const message = document.createElement('h2');
+    message.classList.add("message");
+    message.textContent = text;
+    box.appendChild(message);
+}
+
+
+function createButtons(box){
+    const rockButton = document.createElement('button');
+    rockButton.textContent = "ROCK";
+    box.appendChild(rockButton);
+    
+    const paperButton = document.createElement('button');
+    paperButton.textContent = "PAPER";
+    box.appendChild(paperButton);
+
+    const scissorsButton = document.createElement('button');
+    scissorsButton.textContent = "SCISSORS";
+    box.appendChild(scissorsButton);
+
+    return [rockButton, paperButton, scissorsButton]
+
+}
+
+const container = document.querySelector('#container');
+let welcomeMessage = "Welcome! You know the rules. Click one to start playing!";
+const messageBox = createMessageBox();
+const buttonBox = createButtonBox();
+createMessage(messageBox, welcomeMessage);
+const buttonsArray = createButtons(buttonBox);
