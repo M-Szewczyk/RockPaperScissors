@@ -12,32 +12,6 @@ function getComputerChoice(){
     }
 }
 
-function getPlayerChoice(){
-    correctInput = false;
-    while(!correctInput){
-        let input = prompt("Please choose between 'Rock', 'Paper' and 'Scissors'");
-        input = input.toLowerCase();
-        console.log(input);
-        
-        if(input=='rock'){
-            const playerChoice = input;
-            return playerChoice;
-        }
-        else if(input=='paper'){
-            const playerChoice = input;
-            return playerChoice;
-        }
-        else if(input=='scissors'){
-            const playerChoice = input;
-            return playerChoice;
-        }
-        else {
-            alert("Wrong input! Please only put 'rock', 'paper' or 'scissors'!")
-        }
-
-    }
-}
-
 
 function determineWinner(computerChoice, playerChoice){
     if(computerChoice=='rock' && playerChoice=='paper'){
@@ -81,10 +55,8 @@ function singleRound(computerChoice, playerChoice){
         return winner;
         }
     if(winner == "draw"){
-        alert("It's a draw! Try again!")
-        return singleRound(getComputerChoice(),getPlayerChoice())
-        }
-    
+        alert("It's a draw! Try again!")    
+    }
 }
 
 function getMaxRounds(){
@@ -188,9 +160,22 @@ function createButtons(box){
 
 }
 
+function chooseRock(){
+    messageBox.removeChild(messageBox.firstChild);
+    createMessage(messageBox, "Siema siema o tej porze kazdy wypic moze");
+    singleRound(getComputerChoice(),"rock");
+}
+
 const container = document.querySelector('#container');
 let welcomeMessage = "Welcome! You know the rules. Click one to start playing!";
 const messageBox = createMessageBox();
 const buttonBox = createButtonBox();
 createMessage(messageBox, welcomeMessage);
 const buttonsArray = createButtons(buttonBox);
+const rockButton = buttonsArray[0];
+const paperButton = buttonsArray[1];
+const scissorsButton = buttonsArray[2];
+
+rockButton.addEventListener('click', chooseRock)
+
+//skonczylem na tym ze da sie rozegrac runde klikajac na guzik
