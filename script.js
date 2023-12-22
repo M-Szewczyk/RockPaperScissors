@@ -72,31 +72,21 @@ function clearMessageBox(messageBox){
 
 function clearButtonBox(buttonBox){
     while (buttonBox.firstChild){
-        buttonBox.removeChild(buttonBox,lastChild);
+        buttonBox.removeChild(buttonBox.lastChild);
     }
 }
 
-function createButtons(box){
-    const rockButton = document.createElement('button');
-    rockButton.textContent = "ROCK";
-    box.appendChild(rockButton);
-    
-    const paperButton = document.createElement('button');
-    paperButton.textContent = "PAPER";
-    box.appendChild(paperButton);
-
-    const scissorsButton = document.createElement('button');
-    scissorsButton.textContent = "SCISSORS";
-    box.appendChild(scissorsButton);
-
-    return [rockButton, paperButton, scissorsButton]
-
+function createButtons(){
+    const rockButton = createButton(buttonBox,"ROCK", chooseRock);
+    const paperButton = createButton(buttonBox, "PAPER", choosePaper);
+    const scissorsButton = createButton(buttonBox, "SCISSORS", chooseScissors);
 }
 
-function createButton(box,buttonText){
+function createButton(box,buttonText, func){
     const button = document.createElement('button');
     button.textContent = buttonText;
     box.appendChild(button);
+    button.addEventListener('click',func);
     return button;
 }
 
@@ -133,23 +123,39 @@ function showScore(messageBox){
     if (playerCounter == 5){
         let playerWonMessage = "Yay, you're the champion! Congrats!";
         createMessage(messageBox, playerWonMessage);
+        endGame();
     }
     else if (computerCounter == 5){
         let computerWonMessage = "Oh no! It seems that you have lost. Better luck next time!";
         createMessage(messageBox,computerWonMessage);
+        endGame();
     }
 }
 
 function endGame(){
-    clearButtonBox();
+    clearButtonBox(buttonBox);
     continueButton = createButton(buttonBox, "Continue");
-    continueButton.addEventListener('click', () => {
-        askToPlayAgain();
-    })
+    continueButton.addEventListener('click', askToPlayAgain);
 }
 
 function askToPlayAgain(){
-    
+    clearMessageBox(messageBox);
+    createMessage(messageBox, "Would you like to play again?");
+    clearButtonBox(buttonBox);
+    const yesButton = createButton(buttonBox, "Yes");
+    const noButton = createButton(buttonBox, "No");
+    noButton.addEventListener('click', () => {
+        clearMessageBox(messageBox);
+        clearButtonBox(buttonBox);
+        createMessage(messageBox, "Thank you for playing! See you next time!");
+    })
+    yesButton.addEventListener('click', () => {
+        clearMessageBox(messageBox);
+        clearButtonBox(buttonBox);
+        playerCounter = 0;
+        computerCounter = 0;
+        startGame();
+    })
 }
 
 function singleRound(computerChoice, playerChoice){
@@ -174,22 +180,16 @@ function singleRound(computerChoice, playerChoice){
     }
 }
 
+function startGame(){
+    createMessage(messageBox, welcomeMessage);
+    createButtons();
+}
+
 const container = document.querySelector('#container');
-let welcomeMessage = "Welcome! You know the rules. Click one to start playing!";
+const welcomeMessage = "Welcome! You know the rules. Click one to start playing!";
 const messageBox = createMessageBox();
 const buttonBox = createButtonBox();
-createMessage(messageBox, welcomeMessage);
-
-const buttonsArray = createButtons(buttonBox);
-const rockButton = buttonsArray[0];
-const paperButton = buttonsArray[1];
-const scissorsButton = buttonsArray[2];
-
-let computerCounter = 0;
 let playerCounter = 0;
+let computerCounter = 0;
 
-rockButton.addEventListener('click', chooseRock)
-paperButton.addEventListener('click',choosePaper);
-scissorsButton.addEventListener('click',chooseScissors);
-
-//skonczylem na tym ze da sie rozegrac runde klikajac na guzik
+startGame();
