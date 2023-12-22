@@ -12,7 +12,6 @@ function getComputerChoice(){
     }
 }
 
-
 function determineWinner(computerChoice, playerChoice){
     if(computerChoice=='rock' && playerChoice=='paper'){
         return 'player';
@@ -43,87 +42,10 @@ function determineWinner(computerChoice, playerChoice){
     }
     
 }
-function singleRound(computerChoice, playerChoice){
-    const winner = determineWinner(computerChoice, playerChoice);
-    alert("Computer chose "+computerChoice+ ". You chose "+playerChoice+".\n")
-    if(winner == 'player'){
-        alert("Congratulations! You have won, as "+playerChoice+" beats "+computerChoice+".\n")
-        return winner;
-        }
-    if(winner == 'computer'){
-        alert("Tough luck! You lose, as "+computerChoice+" beats "+playerChoice+".\n")
-        return winner;
-        }
-    if(winner == "draw"){
-        alert("It's a draw! Try again!")    
-    }
-}
-
-function getMaxRounds(){
-    let number = prompt("Welcome to Rock, Paper, Scissors! You can play best of X. Please specify X.");
-    number = Number(number);
-    if (isNaN(number)){
-        alert("That is not a number! Please provide a number.");
-        return getMaxRounds();
-    }
-    else if(number<1){
-        alert("Come now, the number must be positive!")
-        return getMaxRounds();
-    }
-    else if(number%2==0){
-        alert("We must declare a winner! Choose an odd number.")
-        return getMaxRounds();
-    }
-    else {
-        return number;
-    }
-    //return number;
-    
-}
-
-function game(){
-    const best_of_x = getMaxRounds();
-    const max_wins = Math.floor((best_of_x+1)/2)
-    let computerCounter = 0;
-    let playerCounter = 0;
-    while(computerCounter<max_wins && playerCounter<max_wins){
-        let winner = singleRound(getComputerChoice(), getPlayerChoice());
-        if (winner == 'player'){
-            playerCounter++;
-        }
-        else if (winner == 'computer'){
-            computerCounter++;
-        }
-        if (computerCounter<max_wins && playerCounter<max_wins){
-            alert("Current score: you - "+playerCounter+". Computer - "+computerCounter+".");
-        }
-        
-    }
-    let final_score = "Final score: you - "+playerCounter+". Computer - "+computerCounter+".";
-    if (playerCounter>computerCounter){
-        alert("YOU ARE THE CHAMPION! CONGRATULATIONS! "+final_score);
-    }
-    else if (playerCounter<computerCounter){
-        alert("Better luck next time! "+final_score);
-    }
-    let playAgain = prompt("Want to play again? Y/N");
-    if (playAgain=="Y"){
-        game(getMaxRounds());
-    }
-    else if (playAgain=="N"){
-        alert("Alright. Thank you for playing!");
-    }
-    else {
-        alert("Please only choose Y or N.");
-        game(getMaxRounds());
-    }
-
-}
-
-//game();
 
 function createMessageBox(){
     const messageBox = document.createElement('div');
+    messageBox.classList.add('messageBox');
     container.appendChild(messageBox);
     return messageBox;
 }
@@ -142,6 +64,17 @@ function createMessage(box,text){
     box.appendChild(message);
 }
 
+function clearMessageBox(messageBox){
+    while (messageBox.firstChild){
+        messageBox.removeChild(messageBox.lastChild);
+    }
+}
+
+function clearButtonBox(buttonBox){
+    while (buttonBox.firstChild){
+        buttonBox.removeChild(buttonBox,lastChild);
+    }
+}
 
 function createButtons(box){
     const rockButton = document.createElement('button');
@@ -160,10 +93,85 @@ function createButtons(box){
 
 }
 
+function createButton(box,buttonText){
+    const button = document.createElement('button');
+    button.textContent = buttonText;
+    box.appendChild(button);
+    return button;
+}
+
 function chooseRock(){
-    messageBox.removeChild(messageBox.firstChild);
-    createMessage(messageBox, "Siema siema o tej porze kazdy wypic moze");
-    singleRound(getComputerChoice(),"rock");
+    const winner = singleRound(getComputerChoice(),"rock");
+    addWinToCounter(winner);
+    showScore(messageBox);
+}
+
+function choosePaper(){
+    const winner = singleRound(getComputerChoice(),"paper");
+    addWinToCounter(winner);
+    showScore(messageBox);
+}
+
+function chooseScissors(){
+    const winner = singleRound(getComputerChoice(),"scissors");
+    addWinToCounter(winner);
+    showScore(messageBox);
+}
+
+function addWinToCounter(winner){
+    if (winner=='player'){
+        playerCounter++;
+    }
+    if (winner=='computer'){
+        computerCounter++;
+    }
+}
+
+function showScore(messageBox){
+    let scoreMessage = "Current score: you - "+playerCounter+", computer - " +computerCounter +".\n";
+    createMessage(messageBox, scoreMessage);
+    if (playerCounter == 5){
+        let playerWonMessage = "Yay, you're the champion! Congrats!";
+        createMessage(messageBox, playerWonMessage);
+    }
+    else if (computerCounter == 5){
+        let computerWonMessage = "Oh no! It seems that you have lost. Better luck next time!";
+        createMessage(messageBox,computerWonMessage);
+    }
+}
+
+function endGame(){
+    clearButtonBox();
+    continueButton = createButton(buttonBox, "Continue");
+    continueButton.addEventListener('click', () => {
+        askToPlayAgain();
+    })
+}
+
+function askToPlayAgain(){
+    
+}
+
+function singleRound(computerChoice, playerChoice){
+    const winner = determineWinner(computerChoice, playerChoice);
+    let winnerAnnouncement = "Computer chose "+computerChoice+ ". You chose "+playerChoice+".\n";
+    clearMessageBox(messageBox);
+    createMessage(messageBox, winnerAnnouncement);
+    if(winner == 'player'){
+        let playerWonMessage = "Congratulations! You have won, as "+playerChoice+" beats "+computerChoice+".\n";
+        createMessage(messageBox, playerWonMessage);
+        return winner;
+        }
+    if(winner == 'computer'){
+        let computerWonMessage = "Tough luck! You lose, as "+computerChoice+" beats "+playerChoice+".\n";
+        createMessage(messageBox, computerWonMessage);
+        return winner;
+        }
+    if(winner == "draw"){
+        let drawMessage = "It's a draw! Try again!";
+        createMessage(messageBox, drawMessage);
+        return winner;    
+    }
 }
 
 const container = document.querySelector('#container');
@@ -171,11 +179,17 @@ let welcomeMessage = "Welcome! You know the rules. Click one to start playing!";
 const messageBox = createMessageBox();
 const buttonBox = createButtonBox();
 createMessage(messageBox, welcomeMessage);
+
 const buttonsArray = createButtons(buttonBox);
 const rockButton = buttonsArray[0];
 const paperButton = buttonsArray[1];
 const scissorsButton = buttonsArray[2];
 
+let computerCounter = 0;
+let playerCounter = 0;
+
 rockButton.addEventListener('click', chooseRock)
+paperButton.addEventListener('click',choosePaper);
+scissorsButton.addEventListener('click',chooseScissors);
 
 //skonczylem na tym ze da sie rozegrac runde klikajac na guzik
